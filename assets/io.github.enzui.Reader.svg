@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>Reader</title>
+  <defs>
+    <filter id="enz-reader-drop" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dy="2" result="blur"/>
+      <feComponentTransfer in="blur" result="shadow">
+        <feFuncA type="linear" slope="0.28"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- portrait keyline; page 64 x 86 (32..96 x 18..104) with an 18 px dog-ear; sheet turned 8 deg about (64 61);
+       glasses: lenses r 11 at (51 94) and (79 94), 4.5 px rims -->
+  <g filter="url(#enz-reader-drop)">
+    <rect x="32" y="18" width="64" height="86" rx="9" fill="#D9622B" transform="rotate(8 64 61)"/>
+    <path d="M41 18 H78 L96 36 V95 A9 9 0 0 1 87 104 H41 A9 9 0 0 1 32 95 V27 A9 9 0 0 1 41 18 Z" fill="#FFFFFF"/>
+  </g>
+  <path d="M78 18 V31 A5 5 0 0 0 83 36 H96 Z" fill="#E6ECF4"/>
+  <rect x="40" y="34" width="32" height="24" rx="4" fill="#E8804F"/>
+  <g fill="#B9C3D3">
+    <rect x="40" y="64" width="48" height="4" rx="2"/>
+    <rect x="40" y="72" width="40" height="4" rx="2"/>
+    <rect x="40" y="80" width="44" height="4" rx="2"/>
+  </g>
+  <g filter="url(#enz-reader-drop)">
+    <g fill="#FFFFFF" fill-opacity="0.6">
+      <circle cx="51" cy="94" r="11"/>
+      <circle cx="79" cy="94" r="11"/>
+    </g>
+    <g fill="none" stroke="#2B3140" stroke-width="4.5">
+      <circle cx="51" cy="94" r="11"/>
+      <circle cx="79" cy="94" r="11"/>
+      <path d="M62 92 Q65 88 68 92" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,93 @@
+[package]
+name = "reader-app"
+version = "0.1.0"
+authors = ["enzUI contributors"]
+edition = "2024"
+publish = false
+license = "MIT"
+description = "Read and annotate PDF, EPUB, and CBZ documents"
+repository = "https://github.com/enz1m/reader"
+rust-version = "1.95"
+
+[workspace]
+resolver = "3"
+
+[features]
+x11 = ["iced/x11", "enzui-iced-widgets/x11"]
+# The enzui-center app connector. Off by default; with it on, the app
+# still connects only when a credential has been enrolled for its app id.
+center = ["dep:enzui-iced-agent"]
+
+[lib]
+name = "reader_app"
+path = "src/lib.rs"
+
+[[bin]]
+name = "reader-app"
+path = "src/main.rs"
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.test]
+debug = 0
+incremental = false
+
+[profile.release]
+debug = 0
+strip = "debuginfo"
+
+[profile.dev.package."*"]
+opt-level = 2
+debug = 0
+incremental = false
+
+[profile.test.package."*"]
+opt-level = 2
+
+[dependencies]
+iced = { git = "https://github.com/enz1m/enzim-iced.git", rev = "67f991b7442cbd79821141069c3b864cc12413f2", default-features = false, features = ["wgpu", "tiny-skia", "crisp", "web-colors", "thread-pool", "linux-theme-detection", "wayland", "canvas", "svg", "a11y", "image-without-codecs", "tokio"] }
+enzui-iced-core = { package = "enzui-core", features = ["accesskit"], git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+enzui-iced-theme = { package = "enzui-theme", git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+enzui-iced-widgets = { package = "enzui-widgets", features = ["portal-dbus", "application-dbus"], git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+enzui-iced-parent-lease = { package = "enzui-parent-lease", git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+enzui-iced-icons = { package = "enzui-icons", git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+enzui-resources = { default-features = false, git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+epub = "2.1"
+zip = "3"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+lopdf = "0.44"
+openssl = "0.10"
+ab_glyph = "0.2"
+poppler-rs = { version = "0.26", features = ["v25_2"] }
+cairo-rs = { version = "0.22", features = ["png"] }
+glib = "0.22"
+enzui-iced-agent = { package = "enzui-agent", features = ["iced-consumer"], optional = true, git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+tokio = { version = "1", features = ["rt-multi-thread"] }
+
+# xdg-foreign chooser parenting is Linux-specific.
+[target.'cfg(target_os = "linux")'.dependencies]
+enzui-iced-wayland = { package = "enzui-wayland", git = "https://github.com/enz1m/enzui.git", tag = "v0.1.0-alpha.1" }
+
+[dev-dependencies]
+# Render tests use the same pinned iced implementation as the application.
+iced_test = { git = "https://github.com/enz1m/enzim-iced.git", rev = "67f991b7442cbd79821141069c3b864cc12413f2" }
+tempfile = "3"
+tokio = { version = "1", features = ["rt-multi-thread", "time"] }
+
+[patch.crates-io]
+zbus_macros = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+zbus_names = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+zvariant = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+zvariant_derive = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+zvariant_utils = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+zbus = { git = "https://github.com/enz1m/enzim-zbus.git", rev = "815a9ca7b64aa24e14ccb6ea3f7eda97ef7bbc8a" }
+winit = { git = "https://github.com/enz1m/enzim-winit.git", rev = "f6ce16941bf815a438db7e628ab1126ce48e31dd" }
+
+
+# Keep unsafe exceptions local to the Poppler/signing FFI.
+[lints.rust]
+unsafe_code = "deny"

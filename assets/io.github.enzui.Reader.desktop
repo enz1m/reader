@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Reader
+GenericName=Document Reader
+Comment=Read PDF, EPUB and CBZ documents
+Exec=reader-app %f
+TryExec=reader-app
+Icon=io.github.enzui.Reader
+Terminal=false
+StartupNotify=true
+StartupWMClass=io.github.enzui.Reader
+Categories=Office;Viewer;
+Keywords=reader;books;documents;pdf;epub;comics;
+MimeType=application/pdf;application/epub+zip;application/vnd.comicbook+zip;application/x-cbz;

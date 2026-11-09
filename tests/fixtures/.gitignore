@@ -1,0 +1,3 @@
+# Annotation sidecars created by a reader-app run against committed fixtures.
+# Second line of defence behind the Git-worktree guard in persistence.rs.
+*.annotations.json

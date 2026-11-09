@@ -1,0 +1,14 @@
+/target/
+/.qa-data/
+*.swp
+__pycache__/
+*.pyc
+
+/AGENTS/
+/framework/
+.env
+.env.*
+!.env.example
+*.log
+*.profraw
+*.profdata
