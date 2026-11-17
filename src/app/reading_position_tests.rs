@@ -45,8 +45,9 @@ fn position_restore_requests(task: Task<Msg>) -> Vec<Msg> {
             request @ Msg::BeginPositionRestore { .. } => Some(request),
             Msg::NativePdfAnnotationsLoaded { .. }
             | Msg::PdfNavigationLoaded { .. }
-            | Msg::PageRasterAllocated { .. } => None,
-            _ => panic!("unexpected document-startup message"),
+            | Msg::PageRasterAllocated { .. }
+            | Msg::Noop => None,
+            message => panic!("unexpected document-startup message: {message:?}"),
         })
         .collect()
 }
