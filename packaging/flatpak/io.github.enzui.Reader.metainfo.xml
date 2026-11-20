@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<component type="desktop-application">
+  <id>io.github.enzui.Reader</id>
+  <name>Reader</name>
+  <summary>Read PDFs, EPUBs, and comic books</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <developer id="io.github.enz1m">
+    <name>enzUI contributors</name>
+  </developer>
+  <launchable type="desktop-id">io.github.enzui.Reader.desktop</launchable>
+  <content_rating type="oars-1.1" />
+  <description>
+    <p>Read PDF and EPUB documents and CBZ comic books. Open files from your file manager, search your documents, and keep a local reading library.</p>
+  </description>
+  <url type="homepage">https://github.com/enz1m/reader</url>
+  <url type="bugtracker">https://github.com/enz1m/reader/issues</url>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/enz1m/reader/7c17dbf31374b6a6867975eb03951580b67b195e/docs/screenshots/basic-dark.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="0.1.0" date="2026-11-20">
+      <description>
+        <p>Add Flatpak packaging for enzim Apps.</p>
+      </description>
+    </release>
+  </releases>
+</component>

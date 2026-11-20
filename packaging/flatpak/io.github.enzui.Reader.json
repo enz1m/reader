@@ -1,0 +1,94 @@
+{
+  "app-id": "io.github.enzui.Reader",
+  "branch": "stable",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "26.08",
+  "sdk": "org.freedesktop.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.rust-stable"
+  ],
+  "command": "reader-app",
+  "finish-args": [
+    "--socket=wayland",
+    "--device=dri"
+  ],
+  "build-options": {
+    "append-path": "/usr/lib/sdk/rust-stable/bin"
+  },
+  "modules": [
+    {
+      "name": "poppler-data",
+      "buildsystem": "cmake-ninja",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz",
+          "sha256": "c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74"
+        }
+      ]
+    },
+    {
+      "name": "poppler",
+      "buildsystem": "cmake-ninja",
+      "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DENABLE_BOOST=OFF",
+        "-DENABLE_UTILS=OFF",
+        "-DENABLE_CPP=OFF",
+        "-DENABLE_QT5=OFF",
+        "-DENABLE_QT6=OFF",
+        "-DENABLE_NSS3=OFF",
+        "-DENABLE_GPGME=OFF",
+        "-DENABLE_GOBJECT_INTROSPECTION=OFF",
+        "-DBUILD_GTK_TESTS=OFF",
+        "-DBUILD_MANUAL_TESTS=OFF"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://poppler.freedesktop.org/poppler-26.11.0.tar.xz",
+          "sha256": "41c32680160addf5a8dd7a830e4869c01e9f6bee1abb91e44fabd1ba9d7828fb"
+        }
+      ]
+    },
+    {
+      "name": "reader",
+      "buildsystem": "simple",
+      "build-commands": [
+        "cargo build --locked --offline --release --jobs \"${FLATPAK_BUILDER_N_JOBS:-2}\" --bin reader-app",
+        "install -Dm755 target/release/reader-app /app/bin/reader-app",
+        "install -Dm644 assets/io.github.enzui.Reader.desktop /app/share/applications/io.github.enzui.Reader.desktop",
+        "install -Dm644 packaging/flatpak/io.github.enzui.Reader.metainfo.xml /app/share/metainfo/io.github.enzui.Reader.metainfo.xml",
+        "install -Dm644 assets/io.github.enzui.Reader.svg /app/share/icons/hicolor/scalable/apps/io.github.enzui.Reader.svg",
+        "install -Dm644 LICENSE /app/share/licenses/io.github.enzui.Reader/LICENSE"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/enz1m/reader.git",
+          "commit": "@ENZIM_SOURCE_COMMIT@",
+          "disable-submodules": true
+        },
+        {
+          "type": "archive",
+          "url": "https://github.com/enz1m/reader/releases/download/v0.1.0/reader-cargo-vendor-0.1.0.tar.xz",
+          "sha256": "23e7846db41d620b7066e97a19c560ed44b68f1aec48f07c04100d37dae6300f",
+          "strip-components": 1
+        },
+        {
+          "type": "file",
+          "url": "https://raw.githubusercontent.com/enz1m/enzim-winit/40eeb41f8637ef1620afa377ba006874224b6d65/wayland-protocols/xdg-session-management-v1.xml",
+          "sha256": "3674591ca8e68f76297c535e8edd6783d84b59086c38ebe08ff5ff1f2dec5bae",
+          "dest": "vendor/winit-0.30.13/wayland-protocols"
+        }
+      ]
+    }
+  ],
+  "cleanup": [
+    "/include",
+    "/lib/pkgconfig",
+    "/lib/cmake",
+    "*.la",
+    "*.a"
+  ]
+}
