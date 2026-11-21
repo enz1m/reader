@@ -72,7 +72,7 @@
         {
           "type": "archive",
           "url": "https://github.com/enz1m/reader/releases/download/v0.1.0/reader-cargo-vendor-0.1.0.tar.xz",
-          "sha256": "23e7846db41d620b7066e97a19c560ed44b68f1aec48f07c04100d37dae6300f",
+          "sha256": "96eb7a546ac5c6a85dbd4862f0c6daa0e0e808b32ce0cac53c48e4c75d4fa385",
           "strip-components": 1
         },
         {
