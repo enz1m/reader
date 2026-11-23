@@ -25,6 +25,11 @@
           "url": "https://poppler.freedesktop.org/poppler-data-0.4.12.tar.gz",
           "sha256": "c835b640a40ce357e1b83666aabd95edffa24ddddd49b8daff63adb851cdab74"
         }
+      ],
+      "license-files": [
+        "COPYING",
+        "COPYING.adobe",
+        "COPYING.gpl2"
       ]
     },
     {
@@ -49,6 +54,10 @@
           "url": "https://poppler.freedesktop.org/poppler-26.11.0.tar.xz",
           "sha256": "41c32680160addf5a8dd7a830e4869c01e9f6bee1abb91e44fabd1ba9d7828fb"
         }
+      ],
+      "license-files": [
+        "COPYING",
+        "COPYING3"
       ]
     },
     {
@@ -71,8 +80,8 @@
         },
         {
           "type": "archive",
-          "url": "https://github.com/enz1m/reader/releases/download/v0.1.0/reader-cargo-vendor-0.1.0.tar.xz",
-          "sha256": "96eb7a546ac5c6a85dbd4862f0c6daa0e0e808b32ce0cac53c48e4c75d4fa385",
+          "url": "https://github.com/enz1m/reader/releases/download/v0.1.1/reader-cargo-vendor-0.1.1.tar.xz",
+          "sha256": "15fe8e2f33903245c049e5e1f8dec84cb44435d652ad93eb3c41a489f25751b9",
           "strip-components": 1
         },
         {

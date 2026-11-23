@@ -1,6 +1,6 @@
 [package]
 name = "reader-app"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["enzUI contributors"]
 edition = "2024"
 publish = false
@@ -46,13 +46,13 @@ incremental = false
 opt-level = 2
 
 [dependencies]
-iced = { git = "https://github.com/enz1m/enzim-iced.git", rev = "e36b07b591661fdb666088fc943cc0b927a2367b", default-features = false, features = ["wgpu", "tiny-skia", "crisp", "web-colors", "thread-pool", "linux-theme-detection", "wayland", "wayland-dlopen", "wayland-decorations", "canvas", "svg", "a11y", "image-without-codecs", "tokio"] }
-enzui-iced-core = { package = "enzui-core", features = ["accesskit"], git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
-enzui-iced-theme = { package = "enzui-theme", git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
-enzui-iced-widgets = { package = "enzui-widgets", features = ["portal-dbus", "application-dbus"], git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
-enzui-iced-parent-lease = { package = "enzui-parent-lease", git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
-enzui-iced-icons = { package = "enzui-icons", git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
-enzui-resources = { default-features = false, git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
+iced = { git = "https://github.com/enz1m/enzim-iced.git", rev = "22ea94fc775a3de8d1c1a1905b51d09b236e4c3b", default-features = false, features = ["wgpu", "tiny-skia", "crisp", "web-colors", "thread-pool", "linux-theme-detection", "wayland", "wayland-dlopen", "wayland-decorations", "canvas", "svg", "a11y", "image-without-codecs", "tokio"] }
+enzui-iced-core = { package = "enzui-core", features = ["accesskit"], git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
+enzui-iced-theme = { package = "enzui-theme", git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
+enzui-iced-widgets = { package = "enzui-widgets", features = ["portal-dbus", "application-dbus"], git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
+enzui-iced-parent-lease = { package = "enzui-parent-lease", git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
+enzui-iced-icons = { package = "enzui-icons", git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
+enzui-resources = { default-features = false, git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
 epub = "2.1"
 zip = "3"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
@@ -62,7 +62,7 @@ ab_glyph = "0.2"
 poppler-rs = { version = "0.26", features = ["v25_2"] }
 cairo-rs = { version = "0.22", features = ["png"] }
 glib = "0.22"
-enzui-iced-agent = { package = "enzui-agent", features = ["iced-consumer"], optional = true, git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
+enzui-iced-agent = { package = "enzui-agent", features = ["iced-consumer"], optional = true, git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
@@ -70,11 +70,11 @@ tokio = { version = "1", features = ["rt-multi-thread"] }
 
 # xdg-foreign chooser parenting is Linux-specific.
 [target.'cfg(target_os = "linux")'.dependencies]
-enzui-iced-wayland = { package = "enzui-wayland", git = "https://github.com/enz1m/enzui.git", tag = "v0.3.0-alpha.1" }
+enzui-iced-wayland = { package = "enzui-wayland", git = "https://github.com/enz1m/enzui.git", rev = "27d8e8bb1951713ff3c45d6b5a7cb4e2e782c610" }
 
 [dev-dependencies]
 # Render tests use the same pinned iced implementation as the application.
-iced_test = { git = "https://github.com/enz1m/enzim-iced.git", rev = "e36b07b591661fdb666088fc943cc0b927a2367b" }
+iced_test = { git = "https://github.com/enz1m/enzim-iced.git", rev = "22ea94fc775a3de8d1c1a1905b51d09b236e4c3b" }
 tempfile = "3"
 tokio = { version = "1", features = ["rt-multi-thread", "time"] }
 

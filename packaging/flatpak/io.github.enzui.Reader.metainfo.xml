@@ -21,6 +21,12 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.1.1" date="2026-11-23">
+      <description>
+        <p>Update enzUI and its paired iced fork for nonblocking Wayland presentation discovery.</p>
+        <p>Pick up smoother sidebar transitions and centered view switchers from enzUI.</p>
+      </description>
+    </release>
     <release version="0.1.0" date="2026-11-20">
       <description>
         <p>Add Flatpak packaging for enzim Apps.</p>

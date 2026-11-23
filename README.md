@@ -50,7 +50,7 @@ cargo build --locked
 cargo run --locked -- /path/to/document.epub
 ```
 
-Dependencies use the public [enzUI Alpha 0.2](https://github.com/enz1m/enzui/releases/tag/v0.2.0-alpha.1)
+Dependencies use the public [enzUI](https://github.com/enz1m/enzui)
 tag and pinned foundation forks. No framework submodule or sibling checkout is
 needed. Wayland is the default; enable X11 with `--features x11`. The optional
 `center` feature builds the enzUI agent connector; it connects only after enrollment.
