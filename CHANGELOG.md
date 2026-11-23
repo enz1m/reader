@@ -2,8 +2,8 @@
 
 ## 0.1.1
 
-- Update enzUI and its paired iced fork for nonblocking Wayland presentation discovery.
-- Pick up smoother sidebar transitions and centered view switchers from enzUI.
+- Reader is available on enzim Apps. Open a PDF, EPUB, or CBZ, search inside documents, and return to where you left off.
+- The sidebar transitions more smoothly when you show or hide it.
 
 ## 0.1.0 — initial source release
 

@@ -23,8 +23,8 @@
   <releases>
     <release version="0.1.1" date="2026-11-23">
       <description>
-        <p>Update enzUI and its paired iced fork for nonblocking Wayland presentation discovery.</p>
-        <p>Pick up smoother sidebar transitions and centered view switchers from enzUI.</p>
+        <p>Reader is available on enzim Apps. Open a PDF, EPUB, or CBZ, search inside documents, and return to where you left off.</p>
+        <p>The sidebar transitions more smoothly when you show or hide it.</p>
       </description>
     </release>
     <release version="0.1.0" date="2026-11-20">
