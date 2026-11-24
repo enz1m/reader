@@ -21,6 +21,7 @@ pub const MAX_PAGES: usize = 1_000;
 pub const MAX_TOTAL_PIXELS: u64 = 512 * 1024 * 1024;
 pub const MAX_TOTAL_RGBA_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 const INITIAL_PAGES: usize = 1;
+const HEADER_PROBE_BYTES: u64 = 64 * 1024;
 const IMAGE_LIMITS: DecodeLimits = DecodeLimits::DEFAULT;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -118,27 +119,18 @@ pub fn load_cbz(path: &Path) -> Result<CbzLoadResult, CbzError> {
 
     let mut total_pixels = 0u64;
     let mut total_rgba_bytes = 0u64;
-    let mut pages = Vec::new();
     for (index, entry) in entries.iter_mut().enumerate() {
-        let bytes = read_entry(&mut archive, entry, index)?;
-        let format =
-            format_for_name(&entry.archive_name).ok_or(CbzError::UnsupportedEntry { index })?;
-        verify_format(&bytes, format, index)?;
-        let (width, height) = image_dimensions(&bytes, format, index)?;
-        enforce_image_limits(bytes.len() as u64, width, height, index)?;
+        let (width, height) = probe_dimensions(&mut archive, entry, index)?;
+        enforce_image_limits(entry.encoded_bytes, width, height, index)?;
         add_decoded_totals(&mut total_pixels, &mut total_rgba_bytes, width, height)?;
-
-        let rgba = decode_rgba(bytes, format, index)?;
         entry.extent = PageExtent { width, height };
-        if index < INITIAL_PAGES {
-            pages.push(PageBitmap {
-                index,
-                rgba,
-                width,
-                height,
-            });
-        }
     }
+    let pages = entries
+        .iter()
+        .take(INITIAL_PAGES)
+        .enumerate()
+        .map(|(index, entry)| decode_page(&mut archive, entry, index))
+        .collect::<Result<_, _>>()?;
 
     Ok(CbzLoadResult { entries, pages })
 }
@@ -157,28 +149,26 @@ pub fn render_pages(
         let Some(entry) = entries.get(index) else {
             continue;
         };
-        let bytes = read_entry(&mut archive, entry, index)?;
-        let format =
-            format_for_name(&entry.archive_name).ok_or(CbzError::UnsupportedEntry { index })?;
-        verify_format(&bytes, format, index)?;
-        let (width, height) = image_dimensions(&bytes, format, index)?;
-        enforce_image_limits(bytes.len() as u64, width, height, index)?;
-        if (PageExtent { width, height }) != entry.extent {
+        let page = decode_page(&mut archive, entry, index)?;
+        if (PageExtent {
+            width: page.width,
+            height: page.height,
+        }) != entry.extent
+        {
             return Err(CbzError::ArchiveChanged);
         }
-        pages.push(PageBitmap {
-            index,
-            rgba: decode_rgba(bytes, format, index)?,
-            width,
-            height,
-        });
+        pages.push(page);
     }
     Ok(pages)
 }
 
 pub fn render_first_page_thumbnail(path: &str, target_width: u32) -> Option<PageThumbnail> {
-    let loaded = load_cbz(Path::new(path)).ok()?;
-    let first = loaded.pages.into_iter().next()?;
+    let mut archive = open_archive(Path::new(path)).ok()?;
+    let entries = enumerate_entries(&mut archive).ok()?;
+    let entry = entries
+        .iter()
+        .min_by(|a, b| natural_cmp(&a.archive_name, &b.archive_name))?;
+    let first = decode_page(&mut archive, entry, 0).ok()?;
     let image = image::RgbaImage::from_raw(first.width, first.height, first.rgba)?;
     let target_width = target_width.max(1);
     let resized = image::DynamicImage::ImageRgba8(image)
@@ -368,10 +358,65 @@ fn validate_entry_path(name: &str, enclosed: bool, index: usize) -> Result<(), C
     Ok(())
 }
 
+fn decode_page<R: Read + Seek>(
+    archive: &mut ZipArchive<R>,
+    entry: &CbzPage,
+    index: usize,
+) -> Result<PageBitmap, CbzError> {
+    let bytes = read_entry(archive, entry, index)?;
+    let format =
+        format_for_name(&entry.archive_name).ok_or(CbzError::UnsupportedEntry { index })?;
+    verify_format(&bytes, format, index)?;
+    let (width, height) = image_dimensions(&bytes, format, index)?;
+    enforce_image_limits(bytes.len() as u64, width, height, index)?;
+    Ok(PageBitmap {
+        index,
+        rgba: decode_rgba(bytes, format, index)?,
+        width,
+        height,
+    })
+}
+
+// Opening a comic needs every page extent but decodes only the pages it shows.
+fn probe_dimensions<R: Read + Seek>(
+    archive: &mut ZipArchive<R>,
+    entry: &CbzPage,
+    index: usize,
+) -> Result<(u32, u32), CbzError> {
+    let format =
+        format_for_name(&entry.archive_name).ok_or(CbzError::UnsupportedEntry { index })?;
+    let header = read_entry_prefix(archive, entry, index, HEADER_PROBE_BYTES)?;
+    verify_format(&header, format, index)?;
+    match image_dimensions(&header, format, index) {
+        Err(_) if (header.len() as u64) < entry.encoded_bytes => {
+            image_dimensions(&read_entry(archive, entry, index)?, format, index)
+        }
+        dimensions => dimensions,
+    }
+}
+
 fn read_entry<R: Read + Seek>(
     archive: &mut ZipArchive<R>,
     expected: &CbzPage,
     index: usize,
+) -> Result<Vec<u8>, CbzError> {
+    let bytes = read_entry_prefix(
+        archive,
+        expected,
+        index,
+        IMAGE_LIMITS.max_encoded_bytes.saturating_add(1),
+    )?;
+    if bytes.len() as u64 != expected.encoded_bytes {
+        return Err(CbzError::CorruptEntry { index });
+    }
+    Ok(bytes)
+}
+
+fn read_entry_prefix<R: Read + Seek>(
+    archive: &mut ZipArchive<R>,
+    expected: &CbzPage,
+    index: usize,
+    limit: u64,
 ) -> Result<Vec<u8>, CbzError> {
     let mut entry = archive
         .by_name(&expected.archive_name)
@@ -384,15 +429,13 @@ fn read_entry<R: Read + Seek>(
     {
         return Err(CbzError::ArchiveChanged);
     }
-    let capacity = usize::try_from(entry.size()).map_err(|_| CbzError::EntryTooLarge { index })?;
+    let capacity =
+        usize::try_from(entry.size().min(limit)).map_err(|_| CbzError::EntryTooLarge { index })?;
     let mut bytes = Vec::with_capacity(capacity);
     (&mut entry)
-        .take(IMAGE_LIMITS.max_encoded_bytes.saturating_add(1))
+        .take(limit)
         .read_to_end(&mut bytes)
         .map_err(|_| CbzError::CorruptEntry { index })?;
-    if bytes.len() as u64 != expected.encoded_bytes {
-        return Err(CbzError::CorruptEntry { index });
-    }
     Ok(bytes)
 }
 
