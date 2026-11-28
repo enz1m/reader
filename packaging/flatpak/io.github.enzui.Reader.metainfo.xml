@@ -21,6 +21,9 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.1.3" date="2026-11-28">
+      <description><p>Decode only visible comic pages when opening documents and generating thumbnails.</p></description>
+    </release>
     <release version="0.1.1" date="2026-11-23">
       <description>
         <p>Reader is available on enzim Apps. Open a PDF, EPUB, or CBZ, search inside documents, and return to where you left off.</p>
